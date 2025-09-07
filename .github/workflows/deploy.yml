@@ -16,9 +16,28 @@ jobs:
         run: |
           curl -I http://localhost:8069 || true
 
-      - name: Test a custom addon update
+      # - name: Test a custom addon update
+      #   run: |
+      #     /usr/bin/python3 /home/odoo/src/odoo/odoo-bin \
+      #       -c /home/odoo/src/odoo/config/odoo.conf \
+      #       -d odoo_db --xmlrpc-port=8070
+      - name: Activate virtual environment
         run: |
-          /usr/bin/python3 /home/odoo/src/odoo/odoo-bin \
+          source /home/odoo/src/venv/bin/activate
+
+          # # Install/update dependencies from requirements if needed
+          # pip install --upgrade pip
+          # pip install -r requirements.txt
+          # pip install -r requirements-dev.txt || true
+
+          # Sync custom addons
+          rsync -a --delete ./custom_addons/ /home/odoo/src/custom_addons/
+
+          # Update modules in running Odoo
+          /home/odoo/src/venv/bin/python3 /home/odoo/src/odoo/odoo-bin \
             -c /home/odoo/src/odoo/config/odoo.conf \
-            -d odoo_db --xmlrpc-port=8070
+            -d odoo_db -u all
+
+          # Restart Odoo service
+          sudo systemctl restart odoo
             
