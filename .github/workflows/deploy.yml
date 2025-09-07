@@ -31,12 +31,12 @@ jobs:
           # pip install -r requirements-dev.txt || true
 
           # Sync custom addons
-          rsync -a --delete ./custom_addons/ /home/odoo/src/custom_addons/
+          # rsync -a --delete ./custom_addons/ /home/odoo/src/custom_addons/
 
           # Update modules in running Odoo
           /home/odoo/src/venv/bin/python3 /home/odoo/src/odoo/odoo-bin \
             -c /home/odoo/src/odoo/config/odoo.conf \
-            -d odoo_db -u all
+            -d odoo_db --xmlrpc-port=8070
 
           # Restart Odoo service
           sudo systemctl restart odoo
