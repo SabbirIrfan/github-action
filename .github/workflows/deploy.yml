@@ -34,7 +34,7 @@ jobs:
           # rsync -a --delete ./custom_addons/ /home/odoo/src/custom_addons/
 
           # Update modules in running Odoo
-          /home/odoo/venv_odoo/bin/python3 /home/odoo/src/odoo/odoo-bin \
+          /home/odoo/src/venv/bin/python3 /home/odoo/src/odoo/odoo-bin \
               -c /home/odoo/src/odoo/config/odoo.conf \
               -d odoo_db --xmlrpc-port=8070
               -i ODOO Portal \
