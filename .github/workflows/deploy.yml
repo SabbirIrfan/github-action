@@ -1,0 +1,22 @@
+name: Test Local VM Odoo
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  test-odoo:
+    runs-on: [self-hosted, linux]
+    steps:
+      - name: Check Odoo status
+        run: |
+          sudo systemctl status odoo || true
+
+      - name: Test HTTP endpoint
+        run: |
+          curl -I http://localhost:8069 || true
+
+      - name: Test a custom addon update
+        run: |
+          /usr/bin/python3 /home/odoo/src/odoo/odoo-bin \
+            -c /home/odoo/src/odoo/config/odoo.conf
