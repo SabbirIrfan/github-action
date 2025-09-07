@@ -2,5 +2,5 @@
 
 
 '''
-its just a test for odoo
+its just a test for odoo (hudai)
 '''
