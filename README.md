@@ -2,5 +2,5 @@
 
 
 '''
-its just a test for odoo (hudai)
+jenkins test run
 '''
