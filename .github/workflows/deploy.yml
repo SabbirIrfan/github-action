@@ -18,13 +18,11 @@ jobs:
 
       - name: Activate virtual environment and run tests
         run: |
-          source /home/odoo/src/venv/bin/activate
-          /home/odoo/src/venv/bin/python3 /home/odoo/src/odoo/odoo-bin \
-              -c /home/odoo/src/odoo/config/odoo.conf \
+          source /home/irfan-706/workspace/odoo_local/.venv/bin/activate
+          python3 /home/irfan-706/workspace/odoo_local/odoo/odoo-bin \
+              -c /home/irfan-706/workspace/odoo_local/odoo/config/odoo.conf \
               -d odoo_db_test --xmlrpc-port=8071 \
-              -i obase,website,auth_oauth,hr,hr_contract,hr_attendance,hr_holidays,portal,mail,hr_timesheet,project,sale_timesheet,odoo_portal \
-              --test-enable \
-              --stop-after-init
+              -i obase,website,auth_oauth,hr,hr_contract,hr_attendance,hr_holidays,portal,mail,hr_timesheet,project,sale_timesheet,odoo_portal
 
       - name: Delete test database
         continue-on-error: true
