@@ -1,5 +1,4 @@
-
-name: Odoo Build and Test
+name: Deploy Custom Modules
 
 on:
   push:
@@ -8,44 +7,29 @@ on:
     branches: [ main ]
 
 jobs:
-  build-odoo:
+  deploy:
     runs-on: self-hosted
     
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-      
-    - name: Set up environment variables
+    - name: Pull latest custom modules
       run: |
-        echo "ODOO_PATH=/home/irfan-706/workspace/odoo_local/odoo" >> $GITHUB_ENV
-        echo "ODOO_CONFIG=/home/irfan-706/workspace/odoo_local/odoo/config/odoo18.conf" >> $GITHUB_ENV
-        echo "VENV_PATH=/home/irfan-706/workspace/odoo_local/.venv" >> $GITHUB_ENV
+        cd /home/irfan-706/workspace/odoo_local/custom_addons/dsinv-odoo
+        git pull origin main
         
-    - name: Activate virtual environment and install dependencies
+    - name: Rebuild Odoo
       run: |
-        source $VENV_PATH/bin/activate
-        pip install --upgrade pip
-        # Install any additional requirements if needed
-        # pip install -r requirements.txt
+        sudo systemctl restart odoo-rebuild
         
-    - name: Run Odoo database update (if needed)
+    - name: Wait for rebuild to complete
       run: |
-        source $VENV_PATH/bin/activate
-        python $ODOO_PATH/odoo-bin -c $ODOO_CONFIG -d ${{ secrets.ODOO_DB_NAME }} -u all --stop-after-init --no-http
-      continue-on-error: true
-      
-    - name: Run Odoo tests
-      run: |
-        source $VENV_PATH/bin/activate
-        python $ODOO_PATH/odoo-bin -c $ODOO_CONFIG -d ${{ secrets.ODOO_DB_TEST }} --test-enable --stop-after-init --no-http
-      continue-on-error: true
-      
-    - name: Start Odoo server (health check)
-      run: |
-        source $VENV_PATH/bin/activate
-        timeout 30s python $ODOO_PATH/odoo-bin -c $ODOO_CONFIG --no-database-list || true
+        # Wait for the service to complete
+        sleep 30
         
-    - name: Cleanup
-      run: |
-        # Kill any remaining Odoo processes
-        pkill -f odoo-bin || true
+        # Check if rebuild was successful
+        if sudo systemctl is-active --quiet odoo; then
+          echo "✅ Odoo rebuilt and started successfully!"
+        else
+          echo "❌ Odoo rebuild failed"
+          sudo journalctl -u odoo-rebuild --no-pager -n 20
+          exit 1
+        fi
