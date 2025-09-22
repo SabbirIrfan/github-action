@@ -7,32 +7,32 @@ on:
     branches: [ main ]
 
 jobs:
-  test:
-    runs-on: self-hosted
-    steps:
-    - uses: actions/checkout@v3
+  # test:
+  #   runs-on: self-hosted
+  #   steps:
+  #   - uses: actions/checkout@v3
     
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
+  #   - name: Set up Python
+  #     uses: actions/setup-python@v4
+  #     with:
+  #       python-version: '3.10'
     
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        # Add any testing dependencies here
+  #   - name: Install dependencies
+  #     run: |
+  #       python -m pip install --upgrade pip
+  #       # Add any testing dependencies here
         
-    - name: Run tests
-      run: |
-        # Add your test commands here
-        echo "Running tests..."
-        # python -m pytest tests/
+  #   - name: Run tests
+  #     run: |
+  #       # Add your test commands here
+  #       echo "Running tests..."
+  #       # python -m pytest tests/
         
-    - name: Lint code
-      run: |
-        # Add linting commands
-        echo "Linting code..."
-        # flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+  #   - name: Lint code
+  #     run: |
+  #       # Add linting commands
+  #       echo "Linting code..."
+  #       # flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
 
   deploy:
     needs: test
