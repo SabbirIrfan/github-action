@@ -1,4 +1,11 @@
-name: Deploy to Production
+# Create workflow directory in custom-modules
+sudo su - odoo
+cd ~/src/custom-modules
+mkdir -p .github/workflows
+
+# Create workflow file
+cat > .github/workflows/deploy.yml << 'EOF'
+name: Deploy Odoo Custom Modules
 
 on:
   push:
@@ -7,45 +14,24 @@ on:
     branches: [ main ]
 
 jobs:
-  # test:
-  #   runs-on: self-hosted
-  #   steps:
-  #   - uses: actions/checkout@v3
-    
-  #   - name: Set up Python
-  #     uses: actions/setup-python@v4
-  #     with:
-  #       python-version: '3.10'
-    
-  #   - name: Install dependencies
-  #     run: |
-  #       python -m pip install --upgrade pip
-  #       # Add any testing dependencies here
-        
-  #   - name: Run tests
-  #     run: |
-  #       # Add your test commands here
-  #       echo "Running tests..."
-  #       # python -m pytest tests/
-        
-  #   - name: Lint code
-  #     run: |
-  #       # Add linting commands
-  #       echo "Linting code..."
-  #       # flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-
   deploy:
-    # needs: test
-    runs-on: self-hosted
-    if: github.ref == 'refs/heads/main'
+    runs-on: [self-hosted, odoo, local]
     
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Deploy to production
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Pull latest changes
       run: |
-        # Copy custom modules to production directory
-        # rsync -av --delete ./ /opt/odoo/custom-addons/ --exclude='.git' --exclude='.github'
+        cd /home/odoo/src/custom-modules
+        git pull origin main
         
-        # Run deployment script
-        /home/dev/deploy-odoo.sh
+    - name: Restart Odoo service
+      run: |
+        sudo systemctl restart odoo
+        
+    - name: Check service status
+      run: |
+        sleep 10
+        sudo systemctl is-active --quiet odoo && echo "Odoo service is running" || echo "Odoo service failed to start"
+EOF
