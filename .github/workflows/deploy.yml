@@ -1,10 +1,3 @@
-# Create workflow directory in custom-modules
-sudo su - odoo
-cd ~/src/custom-modules
-mkdir -p .github/workflows
-
-# Create workflow file
-cat > .github/workflows/deploy.yml << 'EOF'
 name: Deploy Odoo Custom Modules
 
 on:
@@ -34,4 +27,3 @@ jobs:
       run: |
         sleep 10
         sudo systemctl is-active --quiet odoo && echo "Odoo service is running" || echo "Odoo service failed to start"
-EOF
