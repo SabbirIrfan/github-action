@@ -17,7 +17,7 @@ jobs:
     - name: Pull latest changes
       run: |
         cd /home/odoo/src/custom-modules/dsinv-odoo
-        git pull origin main
+        git pull origin feature/directory
         
     - name: Restart Odoo service
       run: |
